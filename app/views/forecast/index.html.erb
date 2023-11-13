@@ -1,0 +1,30 @@
+<h1>Weather Forecast <%= "for ZIP Code #{@zip_code}" if @zip_code %></h1>
+
+<%= form_tag(forecast_index_path, method: :get) do %>
+  <label for="address">Enter Address:</label>
+  <%= text_field_tag :address, params[:address], id: 'address-input', placeholder: 'Plesae enter your full address', required: true, size: 50 %>
+  <%= submit_tag "Get Forecast" %>
+<% end %>
+
+<% if @forecast_data %>
+  <% if @from_cache %>
+    <h4>Note: <u>Forecast data retrieved from cache</u></h4>
+  <% end %>
+
+  <% if @forecast_data['error'].nil? %>
+    <% @current_day_forecast = @forecast_data['forecast']['forecastday'].first %>
+    <p>Local Date: <%= @current_day_forecast['date'] %></p>
+    <p>Today's Minimum Temperature: <%= @current_day_forecast['day']['mintemp_c'] %>°C or <%= @current_day_forecast['day']['mintemp_f'] %>°F</p>
+    <p>Today's Maximum Temperature: <%= @current_day_forecast['day']['maxtemp_c'] %>°C or <%= @current_day_forecast['day']['maxtemp_f'] %>°F</p>
+    <p>Current Temperature: <%= @forecast_data['current']['temp_c'] %>°C or <%= @forecast_data['current']['temp_f'] %>°F</p>
+    <p>Feels Like: <%= @forecast_data['current']['feelslike_c'] %>°C or <%= @forecast_data['current']['feelslike_f'] %>°F</p>
+    <p>Current Condition: <%= @forecast_data['current']['condition']['text'] %></p>
+    <p>Wind: <%= @forecast_data['current']['wind_mph'] %> mph or <%= @forecast_data['current']['wind_kph'] %> kph</p>
+    <p>Wind Direction: <%= @forecast_data['current']['wind_dir'] %></p>
+    <p>Humidity: <%= @forecast_data['current']['humidity'] %></p>
+    <p>Sunrise: <%= @current_day_forecast['astro']['sunrise'] %></p>
+    <p>Sunset: <%= @current_day_forecast['astro']['sunset'] %></p>
+  <% else %>
+    <p>Error: <%= @forecast_data['error']['message'] %></p>
+  <% end %>
+<% end %>
